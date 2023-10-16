@@ -34,6 +34,12 @@ void tray_update(struct tray *tray);
 
 void tray_exit(void);
 
+
+typedef void(*hotkey_handler)(const char*);
+void set_hotkey_handler(hotkey_handler handle);
+char tray_register_hotkey(const char* hotkey);
+void tray_unregister_hotkey(const char* hotkey);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
