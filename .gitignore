@@ -38,3 +38,4 @@ example.exe
 
 .vscode/
 build/
+cmake-*

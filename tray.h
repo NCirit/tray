@@ -6,32 +6,48 @@ extern "C"
 {
 #endif
 
-struct tray_menu;
+#if WIN32
+#ifdef TRAY_EXPORTS
+#define TRAY_EXPORT __declspec(dllexport)
+#else
+#define TRAY_EXPORT __declspec(dllimport)
+#endif
+#else
+#if __GNUC__ >= 4 || defined(__clang__)
+#define TRAY_EXPORT extern __attribute__((visibility("default")))
+#else
+#define TRAY_EXPORT extern
+#endif
+#endif
 
 struct tray {
-  const char *icon;
+  const char *icon_filepath;
   char *tooltip;
-  struct tray_menu *menu;
+  void (*cb)(struct tray *); // called on left click, leave null to just open menu
+  struct tray_menu_item *menu;
 };
 
-struct tray_menu {
+struct tray_menu_item {
   const char *text;
   int disabled;
   int checked;
-  int checkbox;
-
-  void (*cb)(struct tray_menu *);
-  void *context;
-
-  struct tray_menu *submenu;
+  void (*cb)(struct tray_menu_item *);
+  struct tray_menu_item *submenu;
 };
 
+TRAY_EXPORT
+struct tray * tray_get_instance();
+
+TRAY_EXPORT
 int tray_init(struct tray *tray);
 
+TRAY_EXPORT
 int tray_loop(int blocking);
 
+TRAY_EXPORT
 void tray_update(struct tray *tray);
 
+TRAY_EXPORT
 void tray_exit(void);
 
 
